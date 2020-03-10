@@ -1,4 +1,6 @@
-QT       += core gui network xml
+QT       += core gui network xml svg
+
+qtHaveModule(opengl): QT += opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,10 +19,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    svgview.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    svgview.h
 
 RESOURCES += russia.qrc
 
@@ -28,3 +32,9 @@ RESOURCES += russia.qrc
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+FORMS +=
+
+MOC_DIR = moc/
+
+OBJECTS_DIR = obj/
