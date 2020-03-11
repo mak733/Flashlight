@@ -8,7 +8,11 @@ GraphicsColorSvgItem::GraphicsColorSvgItem(QString svgContent, QGraphicsItem *pa
     QGraphicsSvgItem(parent),
     _svgXML()
 {
-    _svgXML.setContent(svgContent);
+    bool success = false;
+    QString error;
+    int line;
+    _svgXML.setContent(svgContent, &success, &error, &line);
+    //int count = _svgXML.toByteArray().count();
     setSharedRenderer(new QSvgRenderer(_svgXML.toByteArray()));
 }
 

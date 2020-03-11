@@ -51,11 +51,14 @@
 #ifndef SVGVIEW_H
 #define SVGVIEW_H
 
+#include <QGraphicsColorizeEffect>
 #include <QGraphicsView>
 #include <QFile>
 
+#include "graphicscolorsvgitem.h"
 
 QT_BEGIN_NAMESPACE
+class QGraphicsColorizeEffect;
 class QGraphicsSvgItem;
 class QSvgRenderer;
 class QWheelEvent;
@@ -81,7 +84,6 @@ public slots:
     void setHighQualityAntialiasing(bool highQualityAntialiasing);
     void setViewBackground(bool enable);
     void setViewOutline(bool enable);
-    void setFlashLightState(bool enable);
     void setLightState(int enable);
 
 protected:

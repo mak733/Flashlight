@@ -74,9 +74,9 @@ SvgView::SvgView(QString flashLightFileName,
     , m_outlineItem(nullptr)
 {
     setScene(new QGraphicsScene(this));
-    setTransformationAnchor(AnchorUnderMouse);
-    setDragMode(ScrollHandDrag);
-    setViewportUpdateMode(FullViewportUpdate);
+    //setTransformationAnchor(AnchorUnderMouse);
+    //setDragMode(ScrollHandDrag);
+    //setViewportUpdateMode(FullViewportUpdate);
 
     // Prepare background check-board pattern
     QPixmap tilePixmap(64, 64);
@@ -116,6 +116,7 @@ bool SvgView::openFile()
 
     m_ligthSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
     m_ligthSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+    //m_ligthSvgItem->setColor(Qt::black);
     m_ligthSvgItem->setZValue(0);
 
     m_backgroundItem = new QGraphicsRectItem(m_flashlightSvgItem->boundingRect());
@@ -166,14 +167,10 @@ void SvgView::setViewOutline(bool enable)
     m_outlineItem->setVisible(enable);
 }
 
-void SvgView::setFlashLightState(bool enable)
-{
-
-}
-
 void SvgView::setLightState(int enable)
 {
     m_ligthSvgItem->setVisible(enable);
+    //m_ligthSvgItem->setColor(Qt::black);
 }
 
 void SvgView::paintEvent(QPaintEvent *event)
