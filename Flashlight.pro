@@ -18,11 +18,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    graphicscolorsvgitem.cpp \
     main.cpp \
     mainwindow.cpp \
     svgview.cpp
 
 HEADERS += \
+    graphicscolorsvgitem.h \
     mainwindow.h \
     svgview.h
 
@@ -35,6 +37,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 FORMS +=
 
-MOC_DIR = moc/
+MOC_DIR = .moc/
 
-OBJECTS_DIR = obj/
+OBJECTS_DIR = .obj/

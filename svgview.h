@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 **
 ** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
@@ -52,12 +52,15 @@
 #define SVGVIEW_H
 
 #include <QGraphicsView>
+#include <QFile>
+
 
 QT_BEGIN_NAMESPACE
 class QGraphicsSvgItem;
 class QSvgRenderer;
 class QWheelEvent;
 class QPaintEvent;
+class QFile;
 QT_END_NAMESPACE
 
 class SvgView : public QGraphicsView
@@ -67,40 +70,33 @@ class SvgView : public QGraphicsView
 public:
     enum RendererType { Native, OpenGL, Image };
 
-    explicit SvgView(QWidget *parent = nullptr);
+    explicit SvgView(QString flashLightFileName,
+                     QString lightFileName,
+                     QWidget *parent = nullptr);
 
-    bool openFile(const QString &fileName);
-    void setRenderer(RendererType type = Native);
+    void addFile(const QString &fileName);
     void drawBackground(QPainter *p, const QRectF &rect) override;
-
-    QSize svgSize() const;
-    QSvgRenderer *renderer() const;
-
-    qreal zoomFactor() const;
 
 public slots:
     void setHighQualityAntialiasing(bool highQualityAntialiasing);
     void setViewBackground(bool enable);
     void setViewOutline(bool enable);
-    void zoomIn();
-    void zoomOut();
-    void resetZoom();
-
-signals:
-    void zoomChanged();
+    void setFlashLightState(bool enable);
+    void setLightState(int enable);
 
 protected:
-    void wheelEvent(QWheelEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    void zoomBy(qreal factor);
+    bool openFile();
 
     RendererType m_renderer;
 
-    QGraphicsSvgItem *m_svgItem;
+    QGraphicsSvgItem *m_flashlightSvgItem;
+    QGraphicsSvgItem *m_ligthSvgItem;
     QGraphicsRectItem *m_backgroundItem;
     QGraphicsRectItem *m_outlineItem;
+
 
     QImage m_image;
 };

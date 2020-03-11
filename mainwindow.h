@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QLayout>
-#include <QPushButton>
+#include <QCheckBox>
 
 #include "svgview.h"
 
@@ -16,14 +16,15 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+public slots:
+    void switchLight();
 
 private:
 
     QWidget *_centralWidget;
 
     QVBoxLayout *_verticalLayout;
-    QPushButton *_testButton;
+    QCheckBox *_testButton;
     SvgView *m_view;
 };
 #endif // MAINWINDOW_H

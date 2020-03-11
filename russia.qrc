@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>style/russia.qss</file>
         <file>image/flashlight.svg</file>
+        <file>image/light.svg</file>
     </qresource>
 </RCC>

@@ -16,7 +16,7 @@
    viewBox="0 0 512 512"
    style="enable-background:new 0 0 512 512;"
    xml:space="preserve"
-   sodipodi:docname="flashlight.svg"
+   sodipodi:docname="light.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
    inkscape:label="light"><metadata
    id="metadata61"><rdf:RDF><cc:Work
@@ -43,8 +43,8 @@
    inkscape:window-maximized="1"
    inkscape:current-layer="Layer_1" />
 <polygon
-   style="display:none;opacity:1;fill:#f9edb2;image-rendering:auto"
-   points="349.029,0 511.586,162.558 298.679,307.158 204.428,212.908 "
+   style="opacity:1;fill:#f9edb2;image-rendering:auto"
+   points="204.428,212.908 349.029,0 511.586,162.558 298.679,307.158 "
    id="polygon2"
    transform="translate(0.3010914,0.1362486)"
    inkscape:label="light" />
@@ -60,7 +60,8 @@
 
 <g
    id="g3743"
-   inkscape:label="flashlight"><g
+   inkscape:label="flashlight"
+   style="display:none"><g
      id="g3730"><g
        id="g899"
        inkscape:label="flashlight"><path
