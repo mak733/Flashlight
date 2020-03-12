@@ -3,9 +3,11 @@
 
 #include <QMainWindow>
 #include <QLayout>
-#include <QCheckBox>
 
-#include "svgview.h"
+#include <QCheckBox>
+#include <QComboBox>
+
+#include "flashlightwidget.h"
 
 
 
@@ -17,14 +19,17 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 public slots:
-    void switchLight();
+    void switchColor(int color);
 
 private:
 
     QWidget *_centralWidget;
 
     QVBoxLayout *_verticalLayout;
+    FlashlightWidget *m_view;
+
+
     QCheckBox *_testButton;
-    SvgView *m_view;
+    QComboBox *_testColor;
 };
 #endif // MAINWINDOW_H

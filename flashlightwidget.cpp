@@ -47,7 +47,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#include "svgview.h"
+#include "flashlightwidget.h"
 
 #include <QSvgRenderer>
 
@@ -63,7 +63,7 @@
 #include <QGLWidget>
 #endif
 
-SvgView::SvgView(QString flashLightFileName,
+FlashlightWidget::FlashlightWidget(QString flashLightFileName,
                  QString lightFileName,
                  QWidget *parent)
     : QGraphicsView(parent)
@@ -74,15 +74,6 @@ SvgView::SvgView(QString flashLightFileName,
     , m_outlineItem(nullptr)
 {
     setScene(new QGraphicsScene(this));
-    //setTransformationAnchor(AnchorUnderMouse);
-    //setDragMode(ScrollHandDrag);
-    //setViewportUpdateMode(FullViewportUpdate);
-
-    // Prepare background check-board pattern
-    QPixmap tilePixmap(64, 64);
-    tilePixmap.fill(Qt::white);
-
-    setBackgroundBrush(tilePixmap);
 
     if (!m_flashlightSvgItem->renderer()->isValid())
         throw std::runtime_error("Can't render flashlight svg file");
@@ -91,7 +82,7 @@ SvgView::SvgView(QString flashLightFileName,
     openFile();
 }
 
-void SvgView::drawBackground(QPainter *p, const QRectF &)
+void FlashlightWidget::drawBackground(QPainter *p, const QRectF &)
 {
     p->save();
     p->resetTransform();
@@ -99,7 +90,7 @@ void SvgView::drawBackground(QPainter *p, const QRectF &)
     p->restore();
 }
 
-bool SvgView::openFile()
+bool FlashlightWidget::openFile()
 {
 
     QGraphicsScene *s = scene();
@@ -116,7 +107,6 @@ bool SvgView::openFile()
 
     m_ligthSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
     m_ligthSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    //m_ligthSvgItem->setColor(Qt::black);
     m_ligthSvgItem->setZValue(0);
 
     m_backgroundItem = new QGraphicsRectItem(m_flashlightSvgItem->boundingRect());
@@ -142,16 +132,35 @@ bool SvgView::openFile()
     return true;
 }
 
-void SvgView::setHighQualityAntialiasing(bool highQualityAntialiasing)
+bool FlashlightWidget::state() const
 {
-#ifndef QT_NO_OPENGL
-    setRenderHint(QPainter::HighQualityAntialiasing, highQualityAntialiasing);
-#else
-    Q_UNUSED(highQualityAntialiasing);
-#endif
+    return m_state;
 }
 
-void SvgView::setViewBackground(bool enable)
+void FlashlightWidget::setState(bool state)
+{
+    m_state = state;
+
+    if ((!m_backgroundItem) || (!m_ligthSvgItem))
+        return;
+
+    m_backgroundItem->setVisible(m_state);
+    m_ligthSvgItem->setVisible(m_state);
+}
+
+QColor FlashlightWidget::color() const
+{
+    return m_color;
+}
+
+void FlashlightWidget::setColor(const QColor &color)
+{
+    m_color = color;
+    m_backgroundItem->setBrush(m_color);
+}
+
+
+void FlashlightWidget::setViewBackground(bool enable)
 {
     if (!m_backgroundItem)
           return;
@@ -159,7 +168,15 @@ void SvgView::setViewBackground(bool enable)
     m_backgroundItem->setVisible(enable);
 }
 
-void SvgView::setViewOutline(bool enable)
+void FlashlightWidget::setBackgroundColor(quint32 color)
+{
+    if (!m_backgroundItem)
+          return;
+
+    setColor(QColor(color));
+}
+
+void FlashlightWidget::setViewOutline(bool enable)
 {
     if (!m_outlineItem)
         return;
@@ -167,13 +184,7 @@ void SvgView::setViewOutline(bool enable)
     m_outlineItem->setVisible(enable);
 }
 
-void SvgView::setLightState(int enable)
-{
-    m_ligthSvgItem->setVisible(enable);
-    //m_ligthSvgItem->setColor(Qt::black);
-}
-
-void SvgView::paintEvent(QPaintEvent *event)
+void FlashlightWidget::paintEvent(QPaintEvent *event)
 {
     if (m_renderer == Image) {
         if (m_image.size() != viewport()->size()) {

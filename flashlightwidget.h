@@ -55,7 +55,6 @@
 #include <QGraphicsView>
 #include <QFile>
 
-#include "graphicscolorsvgitem.h"
 
 QT_BEGIN_NAMESPACE
 class QGraphicsColorizeEffect;
@@ -66,25 +65,28 @@ class QPaintEvent;
 class QFile;
 QT_END_NAMESPACE
 
-class SvgView : public QGraphicsView
+class FlashlightWidget : public QGraphicsView
 {
     Q_OBJECT
 
 public:
     enum RendererType { Native, OpenGL, Image };
 
-    explicit SvgView(QString flashLightFileName,
+    explicit FlashlightWidget(QString flashLightFileName,
                      QString lightFileName,
                      QWidget *parent = nullptr);
 
     void addFile(const QString &fileName);
     void drawBackground(QPainter *p, const QRectF &rect) override;
 
+    QColor color() const;
+    bool state() const;
+
 public slots:
-    void setHighQualityAntialiasing(bool highQualityAntialiasing);
     void setViewBackground(bool enable);
+    void setBackgroundColor(quint32 color);
     void setViewOutline(bool enable);
-    void setLightState(int enable);
+    void setState(bool state);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -93,13 +95,16 @@ private:
     bool openFile();
 
     RendererType m_renderer;
+    QImage m_image;
 
     QGraphicsSvgItem *m_flashlightSvgItem;
     QGraphicsSvgItem *m_ligthSvgItem;
     QGraphicsRectItem *m_backgroundItem;
     QGraphicsRectItem *m_outlineItem;
 
+    bool m_state {false};
 
-    QImage m_image;
+    QColor m_color {Qt::white};
+    void setColor(const QColor &color);
 };
 #endif // SVGVIEW_H
