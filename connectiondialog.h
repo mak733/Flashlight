@@ -48,63 +48,58 @@
 **
 ****************************************************************************/
 
-#ifndef SVGVIEW_H
-#define SVGVIEW_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
-#include <QGraphicsColorizeEffect>
-#include <QGraphicsView>
-#include <QFile>
-
+#include <QDataStream>
+#include <QDialog>
+#include <QTcpSocket>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
-class QGraphicsColorizeEffect;
-class QGraphicsSvgItem;
-class QSvgRenderer;
-class QPaintEvent;
-class QFile;
+class QComboBox;
+class QLabel;
+class QLineEdit;
+class QPushButton;
+class QTcpSocket;
+class QNetworkSession;
 QT_END_NAMESPACE
 
-class FlashlightWidget : public QGraphicsView
+//! [0]
+class ConnectionDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    enum RendererType { Native, OpenGL, Image };
+    explicit ConnectionDialog(QWidget *parent = nullptr);
+    QTcpSocket *m_tcpSocket = nullptr;
 
-    explicit FlashlightWidget(QString flashLightFileName,
-                     QString lightFileName, QString errorFileName,
-                     QWidget *parent = nullptr);
+private slots:
+    void requestNewConnection();
+    void readFortune();
+    void displayError(QAbstractSocket::SocketError socketError);
+    void slotReadyRead();
+    void slotConnected();
 
-
-    QColor color() const;
-    bool state() const;
-
-public slots:
-    void setViewBackground(bool enable);
-    void setBackgroundColor(quint32 color);
-    void setViewOutline(bool enable);
-    void setState(bool state);
-    void setError(bool state);
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
-    void drawBackground(QPainter *p, const QRectF &rect) override;
+signals:
+    void connectError(bool state);
 
 private:
-    bool draw();
+    QLineEdit *_hostLineEdit = nullptr;
+    QLineEdit *_portLineEdit = nullptr;
+    QRegExp _ipRegex;
+    QLabel *_statusLabel = nullptr;
+    QPushButton *_connectButton = nullptr;
+    QPushButton *_loadButton = nullptr;
+    QPushButton *_saveButton = nullptr;
 
-    RendererType m_renderer;
-    QImage m_image;
+    QDataStream in;
+    QString currentFortune;
 
-    QGraphicsSvgItem *m_flashlightSvgItem;
-    QGraphicsSvgItem *m_ligthSvgItem;
-    QGraphicsSvgItem *m_errorSvgItem;
-    QGraphicsRectItem *m_backgroundItem;
-    QGraphicsRectItem *m_outlineItem;
+    quint16     m_nNextBlockSize;
 
-    bool m_state {false};
 
-    QColor m_color {Qt::white};
-    void setColor(const QColor &color);
 };
-#endif // SVGVIEW_H
+//! [0]
+
+#endif

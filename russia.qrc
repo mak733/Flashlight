@@ -3,5 +3,6 @@
         <file>style/russia.qss</file>
         <file>image/flashlight.svg</file>
         <file>image/light.svg</file>
+        <file>image/connection_error.svg</file>
     </qresource>
 </RCC>

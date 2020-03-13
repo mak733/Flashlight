@@ -59,17 +59,17 @@
 #include <qmath.h>
 
 #include <QDebug>
-#ifndef QT_NO_OPENGL
-#include <QGLWidget>
-#endif
+
 
 FlashlightWidget::FlashlightWidget(QString flashLightFileName,
-                 QString lightFileName,
-                 QWidget *parent)
+                                   QString lightFileName,
+                                   QString errorFileName,
+                                   QWidget *parent)
     : QGraphicsView(parent)
     , m_renderer(Native)
     , m_flashlightSvgItem(new QGraphicsSvgItem(flashLightFileName))
     , m_ligthSvgItem(new QGraphicsSvgItem(lightFileName))
+    , m_errorSvgItem(new QGraphicsSvgItem(errorFileName))
     , m_backgroundItem(nullptr)
     , m_outlineItem(nullptr)
 {
@@ -79,7 +79,9 @@ FlashlightWidget::FlashlightWidget(QString flashLightFileName,
         throw std::runtime_error("Can't render flashlight svg file");
     if (!m_ligthSvgItem->renderer()->isValid())
         throw std::runtime_error("Can't render light svg file");
-    openFile();
+    if (!m_errorSvgItem->renderer()->isValid())
+        throw std::runtime_error("Can't render error svg file");
+    draw();
 }
 
 void FlashlightWidget::drawBackground(QPainter *p, const QRectF &)
@@ -90,7 +92,7 @@ void FlashlightWidget::drawBackground(QPainter *p, const QRectF &)
     p->restore();
 }
 
-bool FlashlightWidget::openFile()
+bool FlashlightWidget::draw()
 {
 
     QGraphicsScene *s = scene();
@@ -103,11 +105,15 @@ bool FlashlightWidget::openFile()
 
     m_flashlightSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
     m_flashlightSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    m_flashlightSvgItem->setZValue(1);
+    m_flashlightSvgItem->setZValue(2);
 
     m_ligthSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
     m_ligthSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    m_ligthSvgItem->setZValue(0);
+    m_ligthSvgItem->setZValue(1);
+
+    m_errorSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
+    m_errorSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+    m_errorSvgItem->setZValue(0);
 
     m_backgroundItem = new QGraphicsRectItem(m_flashlightSvgItem->boundingRect());
     m_backgroundItem->setBrush(Qt::white);
@@ -126,6 +132,7 @@ bool FlashlightWidget::openFile()
     s->addItem(m_backgroundItem);
     s->addItem(m_flashlightSvgItem);
     s->addItem(m_ligthSvgItem);
+    s->addItem(m_errorSvgItem);
     s->addItem(m_outlineItem);
 
     s->setSceneRect(m_outlineItem->boundingRect().adjusted(-10, -10, 10, 10));
@@ -146,6 +153,12 @@ void FlashlightWidget::setState(bool state)
 
     m_backgroundItem->setVisible(m_state);
     m_ligthSvgItem->setVisible(m_state);
+    setError(false);
+}
+
+void FlashlightWidget::setError(bool state)
+{
+    m_errorSvgItem->setVisible(state);
 }
 
 QColor FlashlightWidget::color() const
@@ -157,6 +170,7 @@ void FlashlightWidget::setColor(const QColor &color)
 {
     m_color = color;
     m_backgroundItem->setBrush(m_color);
+    setError(false);
 }
 
 

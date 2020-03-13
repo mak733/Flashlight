@@ -3,11 +3,14 @@
 
 #include <QMainWindow>
 #include <QLayout>
-
 #include <QCheckBox>
 #include <QComboBox>
+#include <QPushButton>
+
+#include <QTcpSocket>
 
 #include "flashlightwidget.h"
+#include "connectiondialog.h"
 
 
 
@@ -24,12 +27,13 @@ public slots:
 private:
 
     QWidget *_centralWidget;
-
     QVBoxLayout *_verticalLayout;
-    FlashlightWidget *m_view;
-
-
+    FlashlightWidget *_flashlightWidget;
     QCheckBox *_testButton;
     QComboBox *_testColor;
+
+    ConnectionDialog *_dialog;
+    QTcpSocket *_socket;
+
 };
 #endif // MAINWINDOW_H
