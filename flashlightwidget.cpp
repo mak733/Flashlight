@@ -214,6 +214,14 @@ void FlashlightWidget::paintEvent(QPaintEvent *event)
 
     } else {
         QGraphicsView::paintEvent(event);
+
     }
+}
+
+void FlashlightWidget::resizeEvent(QResizeEvent *event)
+{
+    QGraphicsView::resizeEvent(event);
+
+    fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 

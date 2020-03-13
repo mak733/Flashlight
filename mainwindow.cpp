@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_testColor, SIGNAL(currentIndexChanged(int)), this, SLOT(switchColor(int)));
 
     connect(_dialog, SIGNAL(connectError(bool)), _flashlightWidget, SLOT(setError(bool)));
-
+    _flashlightWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     _verticalLayout->addWidget(_flashlightWidget);
     _verticalLayout->addWidget(_testButton);
     _verticalLayout->addWidget(_testColor);

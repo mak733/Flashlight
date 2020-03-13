@@ -88,6 +88,7 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
     void drawBackground(QPainter *p, const QRectF &rect) override;
 
 private:
