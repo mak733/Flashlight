@@ -84,6 +84,11 @@ FlashlightWidget::FlashlightWidget(QString flashLightFileName,
     draw();
 }
 
+FlashlightWidget::~FlashlightWidget()
+{
+    qDebug() << "~FlashlightWidget";
+}
+
 void FlashlightWidget::drawBackground(QPainter *p, const QRectF &)
 {
     p->save();

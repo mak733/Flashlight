@@ -74,7 +74,7 @@ public:
     explicit FlashlightWidget(QString flashLightFileName,
                      QString lightFileName, QString errorFileName,
                      QWidget *parent = nullptr);
-
+    ~FlashlightWidget();
 
     QColor color() const;
     bool state() const;

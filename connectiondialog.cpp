@@ -52,6 +52,7 @@
 #include <QtNetwork>
 
 #include "connectiondialog.h"
+#include "stream_interface.h"
 
 //! [0]
 ConnectionDialog::ConnectionDialog(QWidget *parent)
@@ -140,6 +141,11 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 
 }
 
+ConnectionDialog::~ConnectionDialog()
+{
+    qDebug() << "~ConnectionDialog()";
+}
+
 
 void ConnectionDialog::requestNewConnection()
 {
@@ -202,6 +208,8 @@ void ConnectionDialog::slotReadyRead()
 {
     QDataStream in(m_tcpSocket);
     in.setVersion(QDataStream::Qt_4_2);
+    Plugin *plugin = Plugin::instance();
+    //_plugin = qobject_cast<StreamInterface *>(plugin->streamPlugin());
     for (;;) {
         if (!m_nNextBlockSize) {
             if (m_tcpSocket->bytesAvailable() < sizeof(quint16)) {

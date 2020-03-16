@@ -7,15 +7,57 @@ using namespace std::chrono;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , _flashlightWidget(new FlashlightWidget(":/image/flashlight.svg"
-                                  ,":/image/light.svg"
-                                  ,":/image/connection_error.svg"
-                                  ,this))
+                                             ,":/image/light.svg"
+                                             ,":/image/connection_error.svg"
+                                             ,this))
 {
 
     _dialog = new ConnectionDialog(this);
     _dialog->exec();
-   // connect(_dialog, SIGNAL());
+    // connect(_dialog, SIGNAL());
 
+
+    createActions();
+    createMenus();
+    createWidgets();
+}
+
+MainWindow::~MainWindow()
+{
+    qDebug() << "quit";
+}
+
+void MainWindow::createActions()
+{
+
+    newAct = new QAction(tr("&Preferences"), this);
+    newAct->setShortcuts(QKeySequence::Preferences);
+    newAct->setStatusTip(tr("Connection settings"));
+    connect(newAct, &QAction::triggered, _dialog, &ConnectionDialog::exec);
+
+    exitAct = new QAction(tr("&Quit"), this);
+    exitAct->setShortcuts(QKeySequence::Quit);
+    exitAct->setStatusTip(tr("Quit"));
+    connect(exitAct, &QAction::triggered, qApp, QApplication::quit);
+
+    helpAct = new QAction(tr("&Help"), this);
+    helpAct->setShortcuts(QKeySequence::HelpContents);
+    helpAct->setStatusTip(tr("Create a new file"));
+    //connect(newAct, &QAction::triggered, this, &MainWindow::newFile);
+}
+
+void MainWindow::createMenus()
+{
+    _fileMenu = menuBar()->addMenu(tr("&File"));
+    _fileMenu->addAction(newAct);
+    _fileMenu->addAction(exitAct);
+
+    _helpMenu = menuBar()->addMenu(tr("&Help"));
+    _helpMenu->addAction(helpAct);
+}
+
+void MainWindow::createWidgets()
+{
     _centralWidget = new QWidget(this);
     setCentralWidget(_centralWidget);
 
@@ -43,28 +85,24 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_testButton, SIGNAL(toggled(bool)), _flashlightWidget, SLOT(setState(bool)));
 }
 
-MainWindow::~MainWindow()
-{
-}
-
 void MainWindow::switchColor(int color)
 {
     switch (color) {
     case 0:
         _flashlightWidget->setBackgroundColor(0xFFFFFFFF);
-    break;
+        break;
     case 1:
         _flashlightWidget->setBackgroundColor(0xFFFF0000);
-    break;
+        break;
     case 2:
         _flashlightWidget->setBackgroundColor(0xFF00FF00);
-    break;
+        break;
     case 3:
         _flashlightWidget->setBackgroundColor(0xFF0000FF);
-    break;
+        break;
     default:
         _flashlightWidget->setBackgroundColor(0xFFFF0000);
     }
-    _dialog->exec();
+    // _dialog->exec();
 }
 

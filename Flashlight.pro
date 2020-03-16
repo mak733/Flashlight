@@ -20,21 +20,28 @@ SOURCES += \
     connectiondialog.cpp \
     flashlightwidget.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    plugins/plugin.cpp
 
 HEADERS += \
     connectiondialog.h \
+    defines.h \
     flashlightwidget.h \
-    mainwindow.h
+    mainwindow.h \
+    plugins/plugin.h \
+    stream_interface.h
+
+INCLUDEPATH += \
+    plugins/
 
 RESOURCES += russia.qrc
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-FORMS +=
 
 MOC_DIR = .moc/
 

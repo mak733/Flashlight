@@ -56,13 +56,14 @@
 #include <QTcpSocket>
 #include <QDebug>
 
+#include "plugin.h"
 QT_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTcpSocket;
-class QNetworkSession;
+class StreamInterface;
 QT_END_NAMESPACE
 
 //! [0]
@@ -72,6 +73,7 @@ class ConnectionDialog : public QDialog
 
 public:
     explicit ConnectionDialog(QWidget *parent = nullptr);
+    ~ConnectionDialog();
     QTcpSocket *m_tcpSocket = nullptr;
 
 private slots:
@@ -97,6 +99,7 @@ private:
     QString currentFortune;
 
     quint16     m_nNextBlockSize;
+    StreamInterface *_plugin;
 
 
 };

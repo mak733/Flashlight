@@ -2,12 +2,16 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QApplication>
+#include <QMenuBar>
 #include <QLayout>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QPushButton>
 
 #include <QTcpSocket>
+
+
 
 #include "flashlightwidget.h"
 #include "connectiondialog.h"
@@ -26,6 +30,13 @@ public slots:
 
 private:
 
+
+    QMenu *_fileMenu;
+    QAction *newAct;
+    QAction *exitAct;
+    QMenu *_helpMenu;
+    QAction *helpAct;
+
     QWidget *_centralWidget;
     QVBoxLayout *_verticalLayout;
     FlashlightWidget *_flashlightWidget;
@@ -35,5 +46,8 @@ private:
     ConnectionDialog *_dialog;
     QTcpSocket *_socket;
 
+    void createActions();
+    void createMenus();
+    void createWidgets();
 };
 #endif // MAINWINDOW_H
