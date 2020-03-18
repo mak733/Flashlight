@@ -3,10 +3,9 @@ TEMPLATE = subdirs
 SUBDIRS += \
     ColorPlugin/colorplugin.pro \
     OffPlugin/offplugin.pro \
-    OnPlugin/onplugin.pro \
-    config.pro
+    OnPlugin/onplugin.pro
 
 HEADERS += \
-    core_interface.h \
     header.h \
-    defines.h
+    ../core_interface.h \
+    ../defines.h

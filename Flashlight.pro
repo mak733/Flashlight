@@ -21,17 +21,18 @@ SOURCES += \
     flashlightwidget.cpp \
     main.cpp \
     mainwindow.cpp \
-    plugins/plugin.cpp
+    plugins/pluginmanager.cpp
 
 HEADERS += \
     connectiondialog.h \
     defines.h \
     flashlightwidget.h \
     mainwindow.h \
-    plugins/plugin.h \
+    plugins/pluginmanager.h \
     stream_interface.h
 
 INCLUDEPATH += \
+    plugins/Type-length-value \
     plugins/
 
 RESOURCES += russia.qrc
@@ -43,6 +44,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 
-MOC_DIR = .moc/
+MOC_DIR = $$(PWD)/.moc/
 
-OBJECTS_DIR = .obj/
+OBJECTS_DIR = $$(PWD)/.obj/
+
+INCLUDEPATH += \
+    plugins/Type-length-value
+
+LIBS += \
+    -Lplugins/libs/tlv/ -lcolorplugin -loffplugin -lonplugin

@@ -1,6 +1,6 @@
 TARGET = colorplugin
 
-include(../config.pro)
+include(../tlv.pro)
 
 HEADERS += \
     codogramm.h \

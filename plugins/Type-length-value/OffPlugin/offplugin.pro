@@ -1,6 +1,6 @@
 TARGET = offplugin
 
-include(../config.pro)
+include(../tlv.pro)
 
 
 HEADERS += \

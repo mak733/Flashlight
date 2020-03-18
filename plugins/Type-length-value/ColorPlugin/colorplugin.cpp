@@ -3,13 +3,8 @@
 #include <unordered_map>
 #include "codogramm.h"
 #include "colorplugin.h"
-#include "defines.h"
 
 using namespace std;
-
-unsigned char ColorPlugin::codogrammType() const {
-    return Defines::Color;
-}
 
 QVariant ColorPlugin::value(const QString &member, const QByteArray &data) const {
     static const unordered_map<string, function<QVariant(const Codogramm *)>> map {

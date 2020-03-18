@@ -73,7 +73,9 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 
     QRegExpValidator *ipValidator = new QRegExpValidator(_ipRegex, this);
     //_hostnameRegex = QRegExp("^\\S+$");
-
+    PluginManager *plugin = PluginManager::instance();
+    CoreInterface *core = plugin->getPlugin(Protocol::TLV, Command::On);
+    //qDebug() << core->name();
     _hostLineEdit->setValidator(ipValidator);
     _hostLineEdit->setText("127.0.0.1");
 
@@ -208,7 +210,7 @@ void ConnectionDialog::slotReadyRead()
 {
     QDataStream in(m_tcpSocket);
     in.setVersion(QDataStream::Qt_4_2);
-    Plugin *plugin = Plugin::instance();
+    PluginManager *plugin = PluginManager::instance();
     //_plugin = qobject_cast<StreamInterface *>(plugin->streamPlugin());
     for (;;) {
         if (!m_nNextBlockSize) {

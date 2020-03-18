@@ -56,7 +56,9 @@
 #include <QTcpSocket>
 #include <QDebug>
 
-#include "plugin.h"
+#include "pluginmanager.h"
+#include "core_interface.h"
+
 QT_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;

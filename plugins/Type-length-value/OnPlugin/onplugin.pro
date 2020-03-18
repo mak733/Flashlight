@@ -1,6 +1,6 @@
 TARGET = onplugin
 
-include(../config.pro)
+include(../tlv.pro)
 
 HEADERS += \
     codogramm.h \
