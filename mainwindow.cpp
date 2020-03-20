@@ -71,21 +71,7 @@ void MainWindow::createWidgets()
     _flashlightWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     _verticalLayout->addWidget(_flashlightWidget);
 #ifdef QT_DEBUG
-    _testButton = new QCheckBox("Switch", this);
-    _testButton->setCheckState(Qt::CheckState::Unchecked);
-    _flashlightWidget->setState(false);
-
-    _testColor = new QComboBox(this);
-    _testColor->addItem("White");
-    _testColor->addItem("Red");
-    _testColor->addItem("Green");
-    _testColor->addItem("Blue");
-    connect(_testColor, SIGNAL(currentIndexChanged(int)), this, SLOT(testSwitchColor(int)));
-
-    _verticalLayout->addWidget(_testButton);
-    _verticalLayout->addWidget(_testColor);
-
-    connect(_testButton, SIGNAL(toggled(bool)), this, SLOT(testSwitchPower(bool)));
+    createTestWidgets();
 #endif
 }
 
@@ -130,6 +116,26 @@ void MainWindow::setFlashlightPower(const bool power)
 }
 
 #ifdef QT_DEBUG
+
+void MainWindow::createTestWidgets()
+{
+    _testButton = new QCheckBox("Switch", this);
+    _testButton->setCheckState(Qt::CheckState::Unchecked);
+    _flashlightWidget->setState(false);
+
+    _testColor = new QComboBox(this);
+    _testColor->addItem("White");
+    _testColor->addItem("Red");
+    _testColor->addItem("Green");
+    _testColor->addItem("Blue");
+    connect(_testColor, SIGNAL(currentIndexChanged(int)), this, SLOT(testSwitchColor(int)));
+
+    _verticalLayout->addWidget(_testButton);
+    _verticalLayout->addWidget(_testColor);
+
+    connect(_testButton, SIGNAL(toggled(bool)), this, SLOT(testSwitchPower(bool)));
+}
+
 void MainWindow::testSwitchColor(int color)
 {
     static const char colorRedMessage[] = {

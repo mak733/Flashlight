@@ -91,6 +91,7 @@ signals:
 private:
     QLineEdit *_hostLineEdit = nullptr;
     QLineEdit *_portLineEdit = nullptr;
+    QRegExp _ipRegex;
     QLabel *_statusLabel = nullptr;
     QPushButton *_connectButton = nullptr;
     QTcpSocket *_tcpSocket = nullptr;

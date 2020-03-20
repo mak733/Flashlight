@@ -140,6 +140,7 @@ bool FlashlightWidget::draw()
     s->addItem(_outlineItem);
 
     s->setSceneRect(_outlineItem->boundingRect().adjusted(-10, -10, 10, 10));
+    setError(false);
     return true;
 }
 
@@ -215,7 +216,6 @@ void FlashlightWidget::paintEvent(QPaintEvent *event)
 void FlashlightWidget::resizeEvent(QResizeEvent *event)
 {
     QGraphicsView::resizeEvent(event);
-
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 

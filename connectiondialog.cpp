@@ -63,14 +63,14 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     QString ipRange = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
-    QRegExp ipRegex("^" + ipRange
-                    + "\\." + ipRange
-                    + "\\." + ipRange
-                    + "\\." + ipRange + "$");
+    _ipRegex =  QRegExp("^" + ipRange
+                        + "\\." + ipRange
+                        + "\\." + ipRange
+                        + "\\." + ipRange + "$");
 
-    QRegExpValidator ipValidator(ipRegex, this);
+    QRegExpValidator *ipValidator = new QRegExpValidator(_ipRegex, this);
 
-    _hostLineEdit->setValidator(&ipValidator);
+    _hostLineEdit->setValidator(ipValidator);
     _hostLineEdit->setText("127.0.0.1");
 
     _portLineEdit->setValidator(new QIntValidator(1, 65535, this));

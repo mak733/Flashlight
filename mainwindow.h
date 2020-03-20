@@ -29,6 +29,8 @@ public:
 public slots:
     void translate(const QByteArray &message);
 #ifdef QT_DEBUG
+
+    void createTestWidgets();
     void testSwitchColor(int color);
     void testSwitchPower(const bool power);
 #endif
@@ -58,6 +60,7 @@ private:
     QCheckBox *_testButton;
     QComboBox *_testColor;
 #endif
+    void testWidgets();
 };
 Q_DECLARE_METATYPE(Color)           //needs for cast Color-type from QVariant
 #endif // MAINWINDOW_H
