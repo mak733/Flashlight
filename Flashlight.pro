@@ -37,6 +37,8 @@ INCLUDEPATH += \
 
 RESOURCES += russia.qrc
 
+OTHER_FILES += manual.odt
+
 DEFINES += QT_MESSAGELOGCONTEXT
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
