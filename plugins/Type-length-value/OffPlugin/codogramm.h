@@ -8,6 +8,6 @@ struct Codogramm {
     Header header;
 };
 
-static_assert(sizeof(Codogramm) == 4, "Codogramm size != 4");
+static_assert(sizeof(Codogramm) == 3, "Codogramm size != 3");
 
 #endif // CODOGRAMM_H

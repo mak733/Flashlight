@@ -37,7 +37,7 @@ INCLUDEPATH += \
 
 RESOURCES += russia.qrc
 
-
+DEFINES += DEBUG=1
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
@@ -50,6 +50,3 @@ OBJECTS_DIR = $$(PWD)/.obj/
 
 INCLUDEPATH += \
     plugins/Type-length-value
-
-LIBS += \
-    -Lplugins/libs/tlv/ -lcolorplugin -loffplugin -lonplugin

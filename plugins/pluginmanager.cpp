@@ -37,15 +37,6 @@ void PluginManager::loadPlugins(QString libDir)
             qDebug() << loader.errorString();
         }
     }
-//      TEST
-//    getPlugin(1,1);
-//    getPlugin(1,1);
-//    getPlugin(1,1);
-//    qDebug() << getPlugin(Protocol::TLV, Command::On)->name();
-//    qDebug() << getPlugin(Protocol::TLV, Command::Off)->name();
-//    qDebug() << getPlugin(Protocol::TLV, Command::Color)->name();
-//    getPlugin(0,1);
-//    getPlugin(1,1);
 }
 
 CoreInterface *PluginManager::getPlugin(quint8 protocol, quint8 type) const {

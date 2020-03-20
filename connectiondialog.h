@@ -56,8 +56,7 @@
 #include <QTcpSocket>
 #include <QDebug>
 
-#include "pluginmanager.h"
-#include "core_interface.h"
+#include "header.h"
 
 QT_BEGIN_NAMESPACE
 class QComboBox;
@@ -74,35 +73,28 @@ class ConnectionDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ConnectionDialog(QWidget *parent = nullptr);
+    explicit ConnectionDialog( QWidget *parent = nullptr);
     ~ConnectionDialog();
-    QTcpSocket *m_tcpSocket = nullptr;
-
+#ifdef QT_DEBUG
+    void testMessage(QByteArray message);
+#endif
 private slots:
     void requestNewConnection();
-    void readFortune();
     void displayError(QAbstractSocket::SocketError socketError);
     void slotReadyRead();
     void slotConnected();
 
 signals:
     void connectError(bool state);
+    void readMessage(QByteArray message);
 
 private:
     QLineEdit *_hostLineEdit = nullptr;
     QLineEdit *_portLineEdit = nullptr;
-    QRegExp _ipRegex;
     QLabel *_statusLabel = nullptr;
     QPushButton *_connectButton = nullptr;
-    QPushButton *_loadButton = nullptr;
-    QPushButton *_saveButton = nullptr;
-
-    QDataStream in;
-    QString currentFortune;
-
-    quint16     m_nNextBlockSize;
-    StreamInterface *_plugin;
-
+    QTcpSocket *_tcpSocket = nullptr;
+    static const quint32 _minimalMessageSize = sizeof(Header);   // type (1 byte) + length (2 bytes)
 
 };
 //! [0]

@@ -69,7 +69,6 @@ class FlashlightWidget : public QGraphicsView
     Q_OBJECT
 
 public:
-    enum RendererType { Native, OpenGL, Image };
 
     explicit FlashlightWidget(QString flashLightFileName,
                      QString lightFileName, QString errorFileName,
@@ -79,11 +78,14 @@ public:
     QColor color() const;
     bool state() const;
 
+    void setBackgroundColor(const quint32 color);
+    void setBackgroundColor(const QColor color);
+
 public slots:
     void setViewBackground(bool enable);
-    void setBackgroundColor(quint32 color);
-    void setViewOutline(bool enable);
     void setState(bool state);
+
+    void setViewOutline(bool enable);
     void setError(bool state);
 
 protected:
@@ -94,18 +96,17 @@ protected:
 private:
     bool draw();
 
-    RendererType m_renderer;
     QImage m_image;
 
-    QGraphicsSvgItem *m_flashlightSvgItem;
-    QGraphicsSvgItem *m_ligthSvgItem;
-    QGraphicsSvgItem *m_errorSvgItem;
-    QGraphicsRectItem *m_backgroundItem;
-    QGraphicsRectItem *m_outlineItem;
+    QGraphicsSvgItem *_flashlightSvgItem;
+    QGraphicsSvgItem *_ligthSvgItem;
+    QGraphicsSvgItem *_errorSvgItem;
+    QGraphicsRectItem *_backgroundItem;
+    QGraphicsRectItem *_outlineItem;
 
-    bool m_state {false};
+    bool _state {false};
 
-    QColor m_color {Qt::white};
+    QColor _color {Qt::white};
     void setColor(const QColor &color);
 };
 #endif // SVGVIEW_H

@@ -5,18 +5,18 @@
 #include <QApplication>
 #include <QMenuBar>
 #include <QLayout>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QPushButton>
-
 #include <QTcpSocket>
-
-
 
 #include "flashlightwidget.h"
 #include "connectiondialog.h"
+#include "pluginmanager.h"
+#include "core_interface.h"
 
-
+#ifdef QT_DEBUG
+#include <QCheckBox>
+#include <QComboBox>
+#include <QPushButton>
+#endif
 
 class MainWindow : public QMainWindow
 {
@@ -25,29 +25,39 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 public slots:
-    void switchColor(int color);
+    void translate(const QByteArray &message);
+#ifdef QT_DEBUG
+    void testSwitchColor(int color);
+    void testSwitchPower(const bool power);
+#endif
+    void switchColor(QColor color);
+    void setFlashlightPower(bool power);
+
 
 private:
-
-
     QMenu *_fileMenu;
-    QAction *newAct;
-    QAction *exitAct;
+    QAction *_newAct;
+    QAction *_exitAct;
     QMenu *_helpMenu;
     QAction *helpAct;
 
     QWidget *_centralWidget;
     QVBoxLayout *_verticalLayout;
     FlashlightWidget *_flashlightWidget;
-    QCheckBox *_testButton;
-    QComboBox *_testColor;
 
     ConnectionDialog *_dialog;
-    QTcpSocket *_socket;
 
     void createActions();
     void createMenus();
     void createWidgets();
+
+
+#ifdef QT_DEBUG
+    QCheckBox *_testButton;
+    QComboBox *_testColor;
+#endif
 };
+Q_DECLARE_METATYPE(Color)           //needs for cast Color-type from QVariant
 #endif // MAINWINDOW_H

@@ -4,11 +4,12 @@
 #include <QtGlobal>
 #include "../header.h"
 
+#pragma pack(push,1)
 struct Codogramm {
     Header header;
-    uint32_t color : 24;
+    Color color;
 };
-
-static_assert(sizeof(Codogramm) == 8, "Codogramm size != 8");
+static_assert(sizeof(Codogramm) == 6, "Codogramm size != 6");
+#pragma pack(pop)
 
 #endif // CODOGRAMM_H

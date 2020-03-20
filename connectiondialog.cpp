@@ -59,24 +59,18 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
     : QDialog(parent)
     , _hostLineEdit(new QLineEdit)
     , _portLineEdit(new QLineEdit)
-    , _connectButton(new QPushButton(tr("Connect")))
-    , _loadButton(new QPushButton(tr("Load")))
-    , _saveButton(new QPushButton(tr("Save")))
-    , m_tcpSocket(new QTcpSocket(this))
+    , _tcpSocket(new QTcpSocket)
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     QString ipRange = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
-    _ipRegex =  QRegExp("^" + ipRange
-                     + "\\." + ipRange
-                     + "\\." + ipRange
-                     + "\\." + ipRange + "$");
+    QRegExp ipRegex("^" + ipRange
+                    + "\\." + ipRange
+                    + "\\." + ipRange
+                    + "\\." + ipRange + "$");
 
-    QRegExpValidator *ipValidator = new QRegExpValidator(_ipRegex, this);
-    //_hostnameRegex = QRegExp("^\\S+$");
-    PluginManager *plugin = PluginManager::instance();
-    CoreInterface *core = plugin->getPlugin(Protocol::TLV, Command::On);
-    //qDebug() << core->name();
-    _hostLineEdit->setValidator(ipValidator);
+    QRegExpValidator ipValidator(ipRegex, this);
+
+    _hostLineEdit->setValidator(&ipValidator);
     _hostLineEdit->setText("127.0.0.1");
 
     _portLineEdit->setValidator(new QIntValidator(1, 65535, this));
@@ -88,32 +82,26 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
     portLabel->setBuddy(_portLineEdit);
 
     _statusLabel = new QLabel(tr("This examples requires that you run the "
-                                "Fortune Server example as well."));
+                                 "Fortune Server example as well."));
 
+    _connectButton = new QPushButton("Connect", this);
     _connectButton->setDefault(true);
 
     auto quitButton = new QPushButton(tr("Quit"));
 
     auto buttonBox = new QDialogButtonBox;
-    buttonBox->addButton(_loadButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
     buttonBox->addButton(_connectButton, QDialogButtonBox::AcceptRole);
-    buttonBox->addButton(_saveButton, QDialogButtonBox::ActionRole);
-
-    in.setDevice(m_tcpSocket);
-    in.setVersion(QDataStream::Qt_4_0);
 
 
     connect(_connectButton, &QAbstractButton::clicked,
             this, &ConnectionDialog::requestNewConnection);
     connect(quitButton, &QAbstractButton::clicked, this, &QWidget::close);
 
-
-    //connect(tcpSocket, &QIODevice::readyRead, this, &ConnectionSettingDialog::readFortune);
-    connect(m_tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
+    connect(_tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
             this, &ConnectionDialog::displayError);
-    connect(m_tcpSocket, SIGNAL(connected()), SLOT(slotConnected()));
-    connect(m_tcpSocket, SIGNAL(readyRead()), SLOT(slotReadyRead()));
+    connect(_tcpSocket, SIGNAL(connected()), SLOT(slotConnected()));
+    connect(_tcpSocket, SIGNAL(readyRead()), SLOT(slotReadyRead()));
 
 
     QGridLayout *mainLayout = nullptr;
@@ -146,97 +134,93 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 ConnectionDialog::~ConnectionDialog()
 {
     qDebug() << "~ConnectionDialog()";
+    _tcpSocket->abort();
+    delete _tcpSocket;
 }
 
+#ifdef QT_DEBUG
+void ConnectionDialog::testMessage(QByteArray message)
+{
+    emit readMessage(message);
+}
+#endif
 
 void ConnectionDialog::requestNewConnection()
 {
-    m_tcpSocket->abort();
-    m_tcpSocket->connectToHost(_hostLineEdit->text(),
-                             _portLineEdit->text().toInt());
+    _tcpSocket->close();
+    _connectButton->setEnabled(false);                  // we must not try to connect while _tcpSocket isn't close
+    _tcpSocket->connectToHost(_hostLineEdit->text(),
+                              _portLineEdit->text().toInt());
 
-}
-
-void ConnectionDialog::readFortune()
-{
-    in.startTransaction();
-
-    QString nextFortune;
-    in >> nextFortune;
-
-    if (!in.commitTransaction())
-        return;
-
-    if (nextFortune == currentFortune) {
-        QTimer::singleShot(0, this, &ConnectionDialog::requestNewConnection);
-        return;
-    }
-
-    currentFortune = nextFortune;
-    _statusLabel->setText(currentFortune);
-    _connectButton->setEnabled(true);
 }
 
 void ConnectionDialog::displayError(QAbstractSocket::SocketError socketError)
 {
     switch (socketError) {
     case QAbstractSocket::RemoteHostClosedError:
-        QMessageBox::information(this, tr("Fortune Client"),
+        QMessageBox::information(this, tr("Flashlight Client"),
                                  tr("The host closed the connection."));
         break;
     case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(this, tr("Fortune Client"),
+        QMessageBox::information(this, tr("Flashlight Client"),
                                  tr("The host was not found. Please check the "
                                     "host name and port settings."));
         break;
     case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("Fortune Client"),
+        QMessageBox::information(this, tr("Flashlight Client"),
                                  tr("The connection was refused by the peer. "
                                     "Make sure the fortune server is running, "
                                     "and check that the host name and port "
                                     "settings are correct."));
         break;
     default:
-        QMessageBox::information(this, tr("Fortune Client"),
+        QMessageBox::information(this, tr("Flashlight Client"),
                                  tr("The following error occurred: %1.")
-                                 .arg(m_tcpSocket->errorString()));
+                                 .arg(_tcpSocket->errorString()));
     }
+    _connectButton->setEnabled(true);
     emit accepted();
     emit connectError(true);
-    _connectButton->setEnabled(true);
 }
 
 void ConnectionDialog::slotReadyRead()
 {
-    QDataStream in(m_tcpSocket);
-    in.setVersion(QDataStream::Qt_4_2);
-    PluginManager *plugin = PluginManager::instance();
-    //_plugin = qobject_cast<StreamInterface *>(plugin->streamPlugin());
+    QByteArray toPlugin;
+    QDataStream in(_tcpSocket);
+    in.setByteOrder(QDataStream::BigEndian);
+    QDataStream out(&toPlugin, QIODevice::WriteOnly);
+    Header header {0, 0};
     for (;;) {
-        if (!m_nNextBlockSize) {
-            if (m_tcpSocket->bytesAvailable() < sizeof(quint16)) {
+        if (!header.length)
+        {
+            if (_tcpSocket->bytesAvailable() < _minimalMessageSize)
+            {
                 break;
             }
-            in >> m_nNextBlockSize;
+            in >> header.type;
+            in >> header.length;
         }
 
-        if (m_tcpSocket->bytesAvailable() < m_nNextBlockSize) {
+        if (_tcpSocket->bytesAvailable() < header.length) {
             break;
         }
-        QTime   time;
-        QString str;
-        in >> time >> str;
-        m_nNextBlockSize = 0;
+        out << header.type << header.length;
+        if( (in.readRawData(toPlugin.data(), header.length) < 0) ||
+                (toPlugin.size() < (sizeof(Header) + header.length)) )
+        {
+            qDebug() << "Something wrong with message size";
+        }
+        else
+            emit readMessage(toPlugin);
+
+        toPlugin.clear();
+        header = {0, 0};
     }
 }
 
 void ConnectionDialog::slotConnected()
 {
-    qDebug() << "connected!";
-    close();
+    emit connectError(false);
+    _connectButton->setEnabled(true);
+    accept();            //close dialog, NOT socket
 }
-
-
-
-
-

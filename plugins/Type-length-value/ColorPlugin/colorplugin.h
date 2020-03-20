@@ -2,8 +2,10 @@
 #define OFFPLUGIN_H
 #include <QDataStream>
 #include <QDebug>
+#include <QByteArray>
 #include "core_interface.h"
 #include "defines.h"
+#include "codogramm.h"
 
 class ColorPlugin: public QObject, CoreInterface{
     Q_OBJECT
@@ -19,5 +21,5 @@ public:
                    const QByteArray &data) const;
     QString name() const {return "Цвет";}
 };
-
+Q_DECLARE_METATYPE(Color)           //needs for cast Color-type to QVariant
 #endif // OFFPLUGIN_H

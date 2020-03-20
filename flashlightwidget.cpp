@@ -66,20 +66,19 @@ FlashlightWidget::FlashlightWidget(QString flashLightFileName,
                                    QString errorFileName,
                                    QWidget *parent)
     : QGraphicsView(parent)
-    , m_renderer(Native)
-    , m_flashlightSvgItem(new QGraphicsSvgItem(flashLightFileName))
-    , m_ligthSvgItem(new QGraphicsSvgItem(lightFileName))
-    , m_errorSvgItem(new QGraphicsSvgItem(errorFileName))
-    , m_backgroundItem(nullptr)
-    , m_outlineItem(nullptr)
+    , _flashlightSvgItem(new QGraphicsSvgItem(flashLightFileName))
+    , _ligthSvgItem(new QGraphicsSvgItem(lightFileName))
+    , _errorSvgItem(new QGraphicsSvgItem(errorFileName))
+    , _backgroundItem(nullptr)
+    , _outlineItem(nullptr)
 {
     setScene(new QGraphicsScene(this));
 
-    if (!m_flashlightSvgItem->renderer()->isValid())
+    if (!_flashlightSvgItem->renderer()->isValid())
         throw std::runtime_error("Can't render flashlight svg file");
-    if (!m_ligthSvgItem->renderer()->isValid())
+    if (!_ligthSvgItem->renderer()->isValid())
         throw std::runtime_error("Can't render light svg file");
-    if (!m_errorSvgItem->renderer()->isValid())
+    if (!_errorSvgItem->renderer()->isValid())
         throw std::runtime_error("Can't render error svg file");
     draw();
 }
@@ -102,125 +101,115 @@ bool FlashlightWidget::draw()
 
     QGraphicsScene *s = scene();
 
-    const bool drawBackground = (m_backgroundItem ? m_backgroundItem->isVisible() : false);
-    const bool drawOutline = (m_outlineItem ? m_outlineItem->isVisible() : true);
+    const bool drawBackground = (_backgroundItem ? _backgroundItem->isVisible() : false);
+    const bool drawOutline = (_outlineItem ? _outlineItem->isVisible() : true);
 
     s->clear();
     resetTransform();
 
-    m_flashlightSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
-    m_flashlightSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    m_flashlightSvgItem->setZValue(2);
+    _flashlightSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
+    _flashlightSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+    _flashlightSvgItem->setZValue(2);
 
-    m_ligthSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
-    m_ligthSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    m_ligthSvgItem->setZValue(1);
+    _ligthSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
+    _ligthSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+    _ligthSvgItem->setZValue(1);
 
-    m_errorSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
-    m_errorSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
-    m_errorSvgItem->setZValue(0);
+    _errorSvgItem->setFlags(QGraphicsItem::ItemClipsToShape);
+    _errorSvgItem->setCacheMode(QGraphicsItem::ItemCoordinateCache);
+    _errorSvgItem->setZValue(0);
 
-    m_backgroundItem = new QGraphicsRectItem(m_flashlightSvgItem->boundingRect());
-    m_backgroundItem->setBrush(Qt::white);
-    m_backgroundItem->setPen(Qt::NoPen);
-    m_backgroundItem->setVisible(drawBackground);
-    m_backgroundItem->setZValue(-1);
+    _backgroundItem = new QGraphicsRectItem(_flashlightSvgItem->boundingRect());
+    _backgroundItem->setBrush(Qt::white);
+    _backgroundItem->setPen(Qt::NoPen);
+    _backgroundItem->setVisible(drawBackground);
+    _backgroundItem->setZValue(-1);
 
-    m_outlineItem = new QGraphicsRectItem(m_flashlightSvgItem->boundingRect());
+    _outlineItem = new QGraphicsRectItem(_flashlightSvgItem->boundingRect());
     QPen outline(Qt::black, 2, Qt::DashLine);
     outline.setCosmetic(true);
-    m_outlineItem->setPen(outline);
-    m_outlineItem->setBrush(Qt::NoBrush);
-    m_outlineItem->setVisible(drawOutline);
-    m_outlineItem->setZValue(1);
+    _outlineItem->setPen(outline);
+    _outlineItem->setBrush(Qt::NoBrush);
+    _outlineItem->setVisible(drawOutline);
+    _outlineItem->setZValue(1);
 
-    s->addItem(m_backgroundItem);
-    s->addItem(m_flashlightSvgItem);
-    s->addItem(m_ligthSvgItem);
-    s->addItem(m_errorSvgItem);
-    s->addItem(m_outlineItem);
+    s->addItem(_backgroundItem);
+    s->addItem(_flashlightSvgItem);
+    s->addItem(_ligthSvgItem);
+    s->addItem(_errorSvgItem);
+    s->addItem(_outlineItem);
 
-    s->setSceneRect(m_outlineItem->boundingRect().adjusted(-10, -10, 10, 10));
+    s->setSceneRect(_outlineItem->boundingRect().adjusted(-10, -10, 10, 10));
     return true;
 }
 
 bool FlashlightWidget::state() const
 {
-    return m_state;
+    return _state;
 }
 
 void FlashlightWidget::setState(bool state)
 {
-    m_state = state;
+    _state = state;
 
-    if ((!m_backgroundItem) || (!m_ligthSvgItem))
+    if ((!_backgroundItem) || (!_ligthSvgItem))
         return;
 
-    m_backgroundItem->setVisible(m_state);
-    m_ligthSvgItem->setVisible(m_state);
+    _backgroundItem->setVisible(_state);
+    _ligthSvgItem->setVisible(_state);
     setError(false);
 }
 
 void FlashlightWidget::setError(bool state)
 {
-    m_errorSvgItem->setVisible(state);
+    _errorSvgItem->setVisible(state);
 }
 
 QColor FlashlightWidget::color() const
 {
-    return m_color;
+    return _color;
 }
 
 void FlashlightWidget::setColor(const QColor &color)
 {
-    m_color = color;
-    m_backgroundItem->setBrush(m_color);
+    _color = color;
+    _backgroundItem->setBrush(_color);
     setError(false);
 }
 
 
 void FlashlightWidget::setViewBackground(bool enable)
 {
-    if (!m_backgroundItem)
-          return;
+    if (!_backgroundItem)
+        return;
 
-    m_backgroundItem->setVisible(enable);
+    _backgroundItem->setVisible(enable);
 }
 
-void FlashlightWidget::setBackgroundColor(quint32 color)
+void FlashlightWidget::setBackgroundColor(const quint32 color)
 {
-    if (!m_backgroundItem)
-          return;
+    if (!_backgroundItem)
+        return;
 
     setColor(QColor(color));
 }
 
+void FlashlightWidget::setBackgroundColor(const QColor color)
+{
+    setColor(color);
+}
+
 void FlashlightWidget::setViewOutline(bool enable)
 {
-    if (!m_outlineItem)
+    if (!_outlineItem)
         return;
 
-    m_outlineItem->setVisible(enable);
+    _outlineItem->setVisible(enable);
 }
 
 void FlashlightWidget::paintEvent(QPaintEvent *event)
 {
-    if (m_renderer == Image) {
-        if (m_image.size() != viewport()->size()) {
-            m_image = QImage(viewport()->size(), QImage::Format_ARGB32_Premultiplied);
-        }
-
-        QPainter imagePainter(&m_image);
-        QGraphicsView::render(&imagePainter);
-        imagePainter.end();
-
-        QPainter p(viewport());
-        p.drawImage(0, 0, m_image);
-
-    } else {
-        QGraphicsView::paintEvent(event);
-
-    }
+    QGraphicsView::paintEvent(event);
 }
 
 void FlashlightWidget::resizeEvent(QResizeEvent *event)
