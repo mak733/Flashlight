@@ -12,11 +12,11 @@
 #include "pluginmanager.h"
 #include "core_interface.h"
 
-#ifdef QT_DEBUG
+#include <QProcessEnvironment>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QPushButton>
-#endif
+#include <QMessageBox>
 
 class MainWindow : public QMainWindow
 {
@@ -27,23 +27,23 @@ public:
     ~MainWindow();
 
 public slots:
-    void translate(const QByteArray &message);
-#ifdef QT_DEBUG
+    void slotTranslate(const QByteArray &message);
 
-    void createTestWidgets();
-    void testSwitchColor(int color);
-    void testSwitchPower(const bool power);
-#endif
-    void switchColor(QColor color);
-    void setFlashlightPower(bool power);
+    void slotCreateTestWidgets();
+    void slotTestSwitchColor(int color);
+    void slotTestSwitchPower(const bool power);
 
+    void slotSwitchColor(QColor color);
+    void slotSetFlashlightPower(bool power);
+
+    void slotShowInfo();
 
 private:
     QMenu *_fileMenu;
-    QAction *_newAct;
+    QAction *_connectionSettingsAct;
     QAction *_exitAct;
     QMenu *_helpMenu;
-    QAction *helpAct;
+    QAction *_helpAct;
 
     QWidget *_centralWidget;
     QVBoxLayout *_verticalLayout;

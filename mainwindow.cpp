@@ -12,7 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
                                              ,this))
 {
     _dialog = new ConnectionDialog(this);
-    _dialog->exec();
+    if(QProcessEnvironment::systemEnvironment().value("SELFTEST") != "true")
+        _dialog->exec();
     createActions();
     createMenus();
     createWidgets();
@@ -20,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(_dialog->result() == QDialog::Rejected)
         _flashlightWidget->setError(true);
 
-    connect(_dialog, SIGNAL(readMessage(QByteArray)), this, SLOT(translate(QByteArray)));
+    connect(_dialog, SIGNAL(readMessage(QByteArray)), this, SLOT(slotTranslate(QByteArray)));
 
 }
 
@@ -34,29 +35,36 @@ MainWindow::~MainWindow()
 void MainWindow::createActions()
 {
 
-    _newAct = new QAction(tr("&Preferences"), this);
-    _newAct->setShortcuts(QKeySequence::Preferences);
-    _newAct->setStatusTip(tr("Connection settings"));
-    connect(_newAct, &QAction::triggered, _dialog, &ConnectionDialog::exec);
+    if(QProcessEnvironment::systemEnvironment().value("SELFTEST") != "true")
+    {
+        _connectionSettingsAct = new QAction(tr("&Connection settings"), this);
+        _connectionSettingsAct->setShortcuts(QKeySequence::Preferences);
+        _connectionSettingsAct->setStatusTip(tr("Connection settings"));
+        connect(_connectionSettingsAct, &QAction::triggered, _dialog, &ConnectionDialog::exec);
+    }
 
     _exitAct = new QAction(tr("&Quit"), this);
     _exitAct->setShortcuts(QKeySequence::Quit);
     _exitAct->setStatusTip(tr("Quit"));
     connect(_exitAct, &QAction::triggered, qApp, QApplication::quit);
 
-    helpAct = new QAction(tr("&Help"), this);
-    helpAct->setShortcuts(QKeySequence::HelpContents);
-    helpAct->setStatusTip(tr("Create a new file"));
+    _helpAct = new QAction(tr("&Help"), this);
+    _helpAct->setShortcuts(QKeySequence::HelpContents);
+    _helpAct->setStatusTip(tr("Create a new file"));
+
+    //connect(_helpAct, &QAction::triggered, this, SLOT(slotShowInfo()));
 }
 
 void MainWindow::createMenus()
 {
     _fileMenu = menuBar()->addMenu(tr("&File"));
-    _fileMenu->addAction(_newAct);
+
+    if(QProcessEnvironment::systemEnvironment().value("SELFTEST") != "true")
+        _fileMenu->addAction(_connectionSettingsAct);
     _fileMenu->addAction(_exitAct);
 
     _helpMenu = menuBar()->addMenu(tr("&Help"));
-    _helpMenu->addAction(helpAct);
+    _helpMenu->addAction(_helpAct);
 }
 
 void MainWindow::createWidgets()
@@ -70,13 +78,13 @@ void MainWindow::createWidgets()
     connect(_dialog, SIGNAL(connectError(bool)), _flashlightWidget, SLOT(setError(bool)));
     _flashlightWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     _verticalLayout->addWidget(_flashlightWidget);
-#ifdef QT_DEBUG
-    createTestWidgets();
-#endif
+    if(QProcessEnvironment::systemEnvironment().value("SELFTEST") == "true")
+        slotCreateTestWidgets();
+
 }
 
 
-void MainWindow::translate(const QByteArray &message)
+void MainWindow::slotTranslate(const QByteArray &message)
 {
     CoreInterface *core = PluginManager::instance()->getPlugin(Protocol::TLV, message.at(0));
     if(!core)
@@ -87,14 +95,14 @@ void MainWindow::translate(const QByteArray &message)
     switch (core->codogrammType()) {
     case Command::Type::On:
     case Command::Type::Off:{
-        setFlashlightPower(core->value("питание", message).toBool());
+        slotSetFlashlightPower(core->value("питание", message).toBool());
         break;
     }
     case Command::Type::Color:{
         QColor newColor;
         Color color = core->value("цвет", message).value<Color>();
         newColor.setRgb(color.red, color.green, color.blue);
-        switchColor(newColor);
+        slotSwitchColor(newColor);
         break;
     }
     default:{
@@ -104,20 +112,27 @@ void MainWindow::translate(const QByteArray &message)
     }
 }
 
-void MainWindow::switchColor(const QColor color)
+void MainWindow::slotSwitchColor(const QColor color)
 {
     _flashlightWidget->setBackgroundColor(color);
 }
 
-void MainWindow::setFlashlightPower(const bool power)
+void MainWindow::slotSetFlashlightPower(const bool power)
 {
     _flashlightWidget->setState(power);
 
 }
 
-#ifdef QT_DEBUG
+void MainWindow::slotShowInfo()
+{
+    QMessageBox::information(this, tr("Flashlight Client"),
+                             tr("The connection was refused by the peer. "
+                                "Make sure the fortune server is running, "
+                                "and check that the host name and port "
+                                "settings are correct."));
+}
 
-void MainWindow::createTestWidgets()
+void MainWindow::slotCreateTestWidgets()
 {
     _testButton = new QCheckBox("Switch", this);
     _testButton->setCheckState(Qt::CheckState::Unchecked);
@@ -128,15 +143,15 @@ void MainWindow::createTestWidgets()
     _testColor->addItem("Red");
     _testColor->addItem("Green");
     _testColor->addItem("Blue");
-    connect(_testColor, SIGNAL(currentIndexChanged(int)), this, SLOT(testSwitchColor(int)));
+    connect(_testColor, SIGNAL(currentIndexChanged(int)), this, SLOT(slotTestSwitchColor(int)));
 
     _verticalLayout->addWidget(_testButton);
     _verticalLayout->addWidget(_testColor);
 
-    connect(_testButton, SIGNAL(toggled(bool)), this, SLOT(testSwitchPower(bool)));
+    connect(_testButton, SIGNAL(toggled(bool)), this, SLOT(slotTestSwitchPower(bool)));
 }
 
-void MainWindow::testSwitchColor(int color)
+void MainWindow::slotTestSwitchColor(int color)
 {
     static const char colorRedMessage[] = {
         0x20, 0x00, 0x03, static_cast<char>(0xff), 0x00, 0x00
@@ -159,10 +174,10 @@ void MainWindow::testSwitchColor(int color)
         _dialog->testMessage(QByteArray::fromRawData(colorWhiteMessage, sizeof(colorWhiteMessage)));
         break;
     case 1:
-    _dialog->testMessage(QByteArray::fromRawData(colorRedMessage, sizeof(colorRedMessage)));
+        _dialog->testMessage(QByteArray::fromRawData(colorRedMessage, sizeof(colorRedMessage)));
         break;
     case 2:
-    _dialog->testMessage(QByteArray::fromRawData(colorGreenMessage, sizeof(colorGreenMessage)));
+        _dialog->testMessage(QByteArray::fromRawData(colorGreenMessage, sizeof(colorGreenMessage)));
         break;
     case 3:
         _dialog->testMessage(QByteArray::fromRawData(colorBlueMessage, sizeof(colorBlueMessage)));
@@ -172,7 +187,7 @@ void MainWindow::testSwitchColor(int color)
     }
 }
 
-void MainWindow::testSwitchPower(const bool power)
+void MainWindow::slotTestSwitchPower(const bool power)
 {
     static const char onMessage[] = {
         0x12, 0x00, 0x00
@@ -186,4 +201,3 @@ void MainWindow::testSwitchPower(const bool power)
         _dialog->testMessage(QByteArray::fromRawData(offMessage, sizeof(offMessage)));
 
 }
-#endif

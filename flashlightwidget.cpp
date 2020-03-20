@@ -154,8 +154,11 @@ void FlashlightWidget::setState(bool state)
     _state = state;
 
     if ((!_backgroundItem) || (!_ligthSvgItem))
+    {
+        qDebug() << "Bad _backgroundItem or _ligthSvgItem";
         return;
-
+    }
+    qDebug() << "Widget state:" << _state;
     _backgroundItem->setVisible(_state);
     _ligthSvgItem->setVisible(_state);
     setError(false);
@@ -175,6 +178,7 @@ void FlashlightWidget::setColor(const QColor &color)
 {
     _color = color;
     _backgroundItem->setBrush(_color);
+    qDebug() << "Flashlight color chnged to:" << color;
     setError(false);
 }
 
