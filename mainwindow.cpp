@@ -51,7 +51,7 @@ void MainWindow::createActions()
     _helpAct = new QAction(tr("&Help"), this);
     _helpAct->setShortcuts(QKeySequence::HelpContents);
     _helpAct->setStatusTip(tr("Create a new file"));
-
+    ///TODO: manual-widget
     //connect(_helpAct, &QAction::triggered, this, SLOT(slotShowInfo()));
 }
 
@@ -127,7 +127,7 @@ void MainWindow::slotShowInfo()
 {
     QMessageBox::information(this, tr("Flashlight Client"),
                              tr("The connection was refused by the peer. "
-                                "Make sure the fortune server is running, "
+                                "Make sure the flashlight server is running, "
                                 "and check that the host name and port "
                                 "settings are correct."));
 }

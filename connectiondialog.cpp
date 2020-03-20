@@ -38,7 +38,7 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
     portLabel->setBuddy(_portLineEdit);
 
     _statusLabel = new QLabel(tr("This examples requires that you run the "
-                                 "Fortune Server example as well."));
+                                 "Flashlight Server example as well."));
 
     _connectButton = new QPushButton("Connect", this);
     _connectButton->setDefault(true);
@@ -133,7 +133,7 @@ void ConnectionDialog::displayError(QAbstractSocket::SocketError socketError)
         qDebug() << "The connection was refused" << _tcpSocket->peerAddress() << _tcpSocket->peerPort();;
         QMessageBox::information(this, tr("The connection was refused"),
                                  tr("The connection was refused by the peer. "
-                                    "Make sure the fortune server is running, "
+                                    "Make sure the flashlight server is running, "
                                     "and check that the host name and port "
                                     "settings are correct."));
         break;

@@ -52,3 +52,7 @@ OBJECTS_DIR = $$(PWD)/.obj/
 
 INCLUDEPATH += \
     plugins/Type-length-value
+
+DISTFILES += \
+    start_selftest.sh \
+    start.sh
