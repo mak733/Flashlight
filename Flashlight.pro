@@ -54,5 +54,6 @@ INCLUDEPATH += \
     plugins/Type-length-value
 
 DISTFILES += \
+    doxy.conf \
     start_selftest.sh \
     start.sh

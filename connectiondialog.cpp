@@ -27,10 +27,10 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
     QRegExpValidator *ipValidator = new QRegExpValidator(_ipRegex, this);
 
     _hostLineEdit->setValidator(ipValidator);
-    _hostLineEdit->setText("127.0.0.1");
+    _hostLineEdit->setText("51.89.20.149");
 
     _portLineEdit->setValidator(new QIntValidator(1, 65535, this));
-    _portLineEdit->setText("9999");
+    _portLineEdit->setText("9991");
 
     auto hostLabel = new QLabel(tr("&IP-address:"));
     hostLabel->setBuddy(_hostLineEdit);
@@ -167,19 +167,16 @@ void ConnectionDialog::slotReadyRead()
             in >> header.type;
             in >> header.length;
         }
-
-        if (_tcpSocket->bytesAvailable() < header.length) {
+        out << header.type << header.length;
+        if (_tcpSocket->bytesAvailable() < (header.length)) {
             break;
         }
-        out << header.type << header.length;
-        if( (in.readRawData(toPlugin.data(), header.length) < 0) ||
-                (toPlugin.size() < (sizeof(Header) + header.length)) )
-        {
-            qDebug() << "Something wrong with message size, delete packet";
-        }
-        else
-            emit readMessage(toPlugin);
-        qDebug() << "Read from socket " << toPlugin.toHex();
+
+        char body[header.length];
+        in.readRawData(body, header.length);
+        out.writeRawData(body, header.length);
+        qDebug() << "Income message" << toPlugin.toHex();
+        emit readMessage(toPlugin);
 
         toPlugin.clear();
         header = {0, 0};

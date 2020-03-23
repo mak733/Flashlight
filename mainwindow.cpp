@@ -12,8 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
                                              ,this))
 {
     _dialog = new ConnectionDialog(this);
-    if(QProcessEnvironment::systemEnvironment().value("SELFTEST") != "true")
-        _dialog->exec();
     createActions();
     createMenus();
     createWidgets();
@@ -22,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
         _flashlightWidget->setError(true);
 
     connect(_dialog, SIGNAL(readMessage(QByteArray)), this, SLOT(slotTranslate(QByteArray)));
-
+    if(QProcessEnvironment::systemEnvironment().value("SELFTEST") != "true")
+        _dialog->exec();
 }
 
 MainWindow::~MainWindow()
@@ -95,6 +94,7 @@ void MainWindow::slotTranslate(const QByteArray &message)
     switch (core->codogrammType()) {
     case Command::Type::On:
     case Command::Type::Off:{
+        qDebug() << "Switch power:" << core->value("питание", message).toBool();
         slotSetFlashlightPower(core->value("питание", message).toBool());
         break;
     }
@@ -102,6 +102,7 @@ void MainWindow::slotTranslate(const QByteArray &message)
         QColor newColor;
         Color color = core->value("цвет", message).value<Color>();
         newColor.setRgb(color.red, color.green, color.blue);
+        qDebug() << "Switch color:" << newColor;
         slotSwitchColor(newColor);
         break;
     }
