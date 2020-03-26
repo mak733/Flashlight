@@ -24,12 +24,16 @@ void PluginManager::loadPlugins(QString libDir)
         if( loader.load() ) {
             if( CoreInterface *core = qobject_cast<CoreInterface *>(loader.instance()) )
             {
-                if(_dataPlugins[core->protocol()] == nullptr)
-                {
-                    _dataPlugins[core->protocol()] = new QHash<quint8, CoreInterface*>;
-                }
-                _dataPlugins[core->protocol()]->insert(core->codogrammType(), core);
-                qDebug() << "Loaded new plugin:" << core->name();
+                auto iter = _dataPlugins.find(core->protocol());
+                if(iter == _dataPlugins.end())
+                    iter = _dataPlugins.insert(core->protocol(), new QHash<quint8, CoreInterface*>());
+                iter.value()->insert(core->codogrammType(), core);
+                //                if(_dataPlugins[core->protocol()] == nullptr)
+                //                {
+                //                    _dataPlugins[core->protocol()] = new QHash<quint8, CoreInterface*>;
+                //                }
+                //                _dataPlugins[core->protocol()]->insert(core->codogrammType(), core);
+                //                qDebug() << "Loaded new plugin:" << core->name();
             }
             //loader.unload();
         } else {
