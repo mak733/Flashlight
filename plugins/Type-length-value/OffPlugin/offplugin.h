@@ -13,8 +13,8 @@ class OffPlugin: public QObject, CoreInterface{
     Q_INTERFACES(CoreInterface)
 
 public:
-    unsigned char codogrammType() const {return Command::Off;}
-    unsigned char protocol() const {return Protocol::TLV;}
+    quint8 codogrammType() const {return Command::Off;}
+    quint8 protocol() const {return Protocol::TLV;}
     QVariant value(const QString &member,
                    const QByteArray &data) const;
     QString name() const {return "Выключить фонарь";}

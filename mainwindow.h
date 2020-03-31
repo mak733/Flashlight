@@ -30,7 +30,7 @@ public slots:
     void slotTranslate(const QByteArray &message);
 
     void slotCreateTestWidgets();
-    void slotTestSwitchColor(int color);
+    void slotTestSwitchColor(quint32 color);
     void slotTestSwitchPower(const bool power);
 
     void slotSwitchColor(QColor color);
