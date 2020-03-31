@@ -26,14 +26,12 @@ void PluginManager::loadPlugins(QString libDir)
             {
                 auto iter = _dataPlugins.find(core->protocol());
                 if(iter == _dataPlugins.end())
-                    iter = _dataPlugins.insert(core->protocol(), new QHash<quint8, CoreInterface*>());
-                iter.value()->insert(core->codogrammType(), core);
-                //                if(_dataPlugins[core->protocol()] == nullptr)
-                //                {
-                //                    _dataPlugins[core->protocol()] = new QHash<quint8, CoreInterface*>;
-                //                }
-                //                _dataPlugins[core->protocol()]->insert(core->codogrammType(), core);
-                //                qDebug() << "Loaded new plugin:" << core->name();
+                {
+                    iter = _dataPlugins.insert(core->protocol(), new QHash<quint8, CoreInterface*>());  //add new protocol
+                    //There is no direct way of changing an item's key through an iterator,
+                    //although it can be done by calling followed by QMap::insert()
+                }
+                iter.value()->insert(core->codogrammType(), core);                                      //add new codogram to protocol
             }
             //loader.unload();
         } else {

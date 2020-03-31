@@ -48,7 +48,6 @@ private:
     QLabel *_statusLabel = nullptr;
     QPushButton *_connectButton = nullptr;
     QTcpSocket *_tcpSocket = nullptr;
-    static const quint32 _minimalMessageSize = sizeof(Header);   // type (1 byte) + length (2 bytes)
 
 };
 //! [0]

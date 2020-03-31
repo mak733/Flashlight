@@ -154,29 +154,32 @@ void ConnectionDialog::slotReadyRead()
     QByteArray toPlugin;
     QDataStream in(_tcpSocket);
     in.setByteOrder(QDataStream::BigEndian);
-    QDataStream out(&toPlugin, QIODevice::WriteOnly);
     Header header {0, 0};
     qDebug() << "Ready read";
     for (;;) {
+        qDebug() << _tcpSocket->property("receive-data-size").toUInt();
         if (!header.length)
         {
-            if (_tcpSocket->bytesAvailable() < _minimalMessageSize)
+            if (_tcpSocket->bytesAvailable() < sizeof(Header))
             {
                 break;
             }
             in >> header.type;
             in >> header.length;
         }
-        out << header.type << header.length;
-        if (_tcpSocket->bytesAvailable() < (header.length)) {
+        if (_tcpSocket->bytesAvailable() < header.length) {
             break;
         }
 
-        char body[header.length];
-        in.readRawData(body, header.length);
-        out.writeRawData(body, header.length);
-        qDebug() << "Income message" << toPlugin.toHex();
-        emit readMessage(toPlugin);
+        toPlugin.append(header.type);
+        toPlugin.append(header.length);
+
+        if( (in.readRawData(toPlugin.data()+sizeof(Header), header.length) < 0) )
+        {
+            qDebug() << "Something wrong with message's body size" << "expect" << header.length;
+        }
+        else
+            emit readMessage(toPlugin);
 
         toPlugin.clear();
         header = {0, 0};
