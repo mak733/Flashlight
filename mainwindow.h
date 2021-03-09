@@ -9,7 +9,7 @@
 
 #include "flashlightwidget.h"
 #include "connectiondialog.h"
-#include "pluginmanager.h"
+#include "plugins/pluginmanager.h"
 #include "core_interface.h"
 
 #include <QProcessEnvironment>

@@ -26,9 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete _flashlightWidget;
-    delete _dialog;
-    qDebug() << "quit";
+
 }
 
 void MainWindow::createActions()

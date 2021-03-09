@@ -2,7 +2,7 @@
 #define CODOGRAMM_H
 
 #include <QtGlobal>
-#include "../header.h"
+#include "header.h"
 
 #pragma pack(push,1)
 struct Codogramm {
