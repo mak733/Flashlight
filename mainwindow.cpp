@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent, const char *ip, const char *port)
                                              ,":/image/connection_error.svg"
                                              ,this))
 {
-    _dialog = new ConnectionDialog(this, ip, port);
+    _dialog = new ConnectionDialog(this);
     createActions();
     createMenus();
     createWidgets();
@@ -19,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent, const char *ip, const char *port)
     if(_dialog->result() == QDialog::Rejected)
         _flashlightWidget->setError(true);
 
-    connect(_dialog, SIGNAL(readMessage(QByteArray)), this, SLOT(slotTranslate(QByteArray)));
+    connect(_dialog, SIGNAL(readMessage(QByteArray)),
+            this, SLOT(slotTranslate(QByteArray)));
     if(QProcessEnvironment::systemEnvironment().value("SELFTEST") != "true")
         _dialog->exec();
 }

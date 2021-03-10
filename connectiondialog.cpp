@@ -30,7 +30,10 @@ ConnectionDialog::ConnectionDialog(QWidget *parent, QString ip, QString port)
     if(ipValidator->validate(ip, pos))
         _hostLineEdit->setText(ip);
     else
+    {
+        qDebug() << "Incorrect IP" << ip << ", will set IP to 127.0.0.1";
         _hostLineEdit->setText("127.0.0.1");
+    }
 
 
     QIntValidator *portValidator = new QIntValidator(1, 65535, this);
@@ -38,7 +41,10 @@ ConnectionDialog::ConnectionDialog(QWidget *parent, QString ip, QString port)
     if(portValidator->validate(port, pos))
         _portLineEdit->setText(port);
     else
+    {
+        qDebug() << "Incorrect port" << port << ", will set port to 9999";
         _portLineEdit->setText("9999");
+    }
 
     auto hostLabel = new QLabel(tr("&IP-address:"));
     hostLabel->setBuddy(_hostLineEdit);

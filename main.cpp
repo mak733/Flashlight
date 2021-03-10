@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 
 #include <QApplication>
 #include <QDateTime>
@@ -50,15 +50,13 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     qInstallMessageHandler(myMessageHandler);
-    if(argc > 3)
+    if(argc < 3)
     {
-        MainWindow w(nullptr, argv[1], argv[2]);
-        w.show();
+        qDebug() << "Error: too few arguments, you need to set IP and port as parameters.";
+        return 1;
     }
-    else
-    {
-        MainWindow w;
-        w.show();
-    }
+
+    MainWindow w(nullptr, argv[1], argv[2]);
+    w.show();
     return a.exec();
 }
