@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent, const char *ip, const char *port)
     createActions();
     createMenus();
     createWidgets();
-
+    PluginManager::instance();
     if(_dialog->result() == QDialog::Rejected)
         _flashlightWidget->setError(true);
 
@@ -151,7 +151,7 @@ void MainWindow::slotCreateTestWidgets()
     connect(_testButton, SIGNAL(toggled(bool)), this, SLOT(slotTestSwitchPower(bool)));
 }
 
-void MainWindow::slotTestSwitchColor(quint32 color)
+void MainWindow::slotTestSwitchColor(int color)
 {
     static const char colorRedMessage[] = {
         0x20, 0x00, 0x03, static_cast<char>(0xff), 0x00, 0x00

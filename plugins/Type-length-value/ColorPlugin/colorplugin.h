@@ -10,7 +10,7 @@
 class ColorPlugin: public QObject, CoreInterface{
     Q_OBJECT
 #if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "Ivideon.Flashlight.Tlv.ColorPlugin")
+    Q_PLUGIN_METADATA(IID "My.Flashlight.Tlv.ColorPlugin")
 #endif
     Q_INTERFACES(CoreInterface)
 

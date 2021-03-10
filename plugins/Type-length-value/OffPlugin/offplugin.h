@@ -8,7 +8,7 @@
 class OffPlugin: public QObject, CoreInterface{
     Q_OBJECT
 #if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "Ivideon.Flashlight.Tlv.OffPlugin")
+    Q_PLUGIN_METADATA(IID "My.Flashlight.Tlv.OffPlugin")
 #endif
     Q_INTERFACES(CoreInterface)
 
