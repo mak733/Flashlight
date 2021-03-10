@@ -23,7 +23,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr,
+                        const char* ip = "127.0.0.1",
+                        const char* port = "9999");
     ~MainWindow();
 
 public slots:

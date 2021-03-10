@@ -15,21 +15,21 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
     QString msgSep = (msg.length()>0)? ">> " : "";
 
     switch (type) {
-        case QtInfoMsg:
-            txt = QString("Info: %1%2%3").arg(function).arg(msgSep).arg(msg);
+    case QtInfoMsg:
+        txt = QString("Info: %1%2%3").arg(function).arg(msgSep).arg(msg);
         break;
-        case QtDebugMsg:
-            txt = QString("Debug: %1%2%3").arg(function).arg(msgSep).arg(msg);
-            break;
-        case QtWarningMsg:
-            txt = QString("Warning: %1%2%3").arg(function).arg(msgSep).arg(msg);
+    case QtDebugMsg:
+        txt = QString("Debug: %1%2%3").arg(function).arg(msgSep).arg(msg);
         break;
-        case QtCriticalMsg:
-            txt = QString("Critical: %1%2%3").arg(function).arg(msgSep).arg(msg);
+    case QtWarningMsg:
+        txt = QString("Warning: %1%2%3").arg(function).arg(msgSep).arg(msg);
         break;
-        case QtFatalMsg:
-            txt = QString("Fatal: %1%2%3").arg(function).arg(msgSep).arg(msg);
-            abort();
+    case QtCriticalMsg:
+        txt = QString("Critical: %1%2%3").arg(function).arg(msgSep).arg(msg);
+        break;
+    case QtFatalMsg:
+        txt = QString("Fatal: %1%2%3").arg(function).arg(msgSep).arg(msg);
+        abort();
         break;
     }
 
@@ -50,7 +50,15 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     qInstallMessageHandler(myMessageHandler);
-    MainWindow w;
-    w.show();
+    if(argc > 3)
+    {
+        MainWindow w(nullptr, argv[1], argv[2]);
+        w.show();
+    }
+    else
+    {
+        MainWindow w;
+        w.show();
+    }
     return a.exec();
 }

@@ -1,7 +1,5 @@
-add_library(IPlugins INTERFACE
-    core_interface.h
-    defines.h
-    header.h)
+﻿cmake_minimum_required(VERSION 3.10)
+project(IPlugins)
 
+add_library(IPlugins INTERFACE)
 target_include_directories(IPlugins INTERFACE .)
-target_link_libraries(IPlugins INTERFACE ${REQUIRED_LIBS_Qt_QUALIFIED})

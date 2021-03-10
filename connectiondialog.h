@@ -27,7 +27,7 @@ class ConnectionDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ConnectionDialog( QWidget *parent = nullptr);
+    explicit ConnectionDialog(QWidget *parent = nullptr, QString ip = "127.0.0.1", QString port = "9999");
     ~ConnectionDialog();
     void testMessage(QByteArray message);
 

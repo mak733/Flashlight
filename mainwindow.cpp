@@ -4,14 +4,14 @@
 #include <thread>
 using namespace std::chrono;
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget *parent, const char *ip, const char *port)
     : QMainWindow(parent)
     , _flashlightWidget(new FlashlightWidget(":/image/flashlight.svg"
                                              ,":/image/light.svg"
                                              ,":/image/connection_error.svg"
                                              ,this))
 {
-    _dialog = new ConnectionDialog(this);
+    _dialog = new ConnectionDialog(this, ip, port);
     createActions();
     createMenus();
     createWidgets();

@@ -11,7 +11,7 @@
 #include "stream_interface.h"
 
 //! [0]
-ConnectionDialog::ConnectionDialog(QWidget *parent)
+ConnectionDialog::ConnectionDialog(QWidget *parent, QString ip, QString port)
     : QDialog(parent)
     , _hostLineEdit(new QLineEdit)
     , _portLineEdit(new QLineEdit)
@@ -25,12 +25,20 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
                         + "\\." + ipRange + "$");
 
     QRegExpValidator *ipValidator = new QRegExpValidator(_ipRegex, this);
-
     _hostLineEdit->setValidator(ipValidator);
-    _hostLineEdit->setText("51.89.20.149");
+    int pos = 0;
+    if(ipValidator->validate(ip, pos))
+        _hostLineEdit->setText(ip);
+    else
+        _hostLineEdit->setText("127.0.0.1");
 
-    _portLineEdit->setValidator(new QIntValidator(1, 65535, this));
-    _portLineEdit->setText("9991");
+
+    QIntValidator *portValidator = new QIntValidator(1, 65535, this);
+    _portLineEdit->setValidator(portValidator);
+    if(portValidator->validate(port, pos))
+        _portLineEdit->setText(port);
+    else
+        _portLineEdit->setText("9999");
 
     auto hostLabel = new QLabel(tr("&IP-address:"));
     hostLabel->setBuddy(_hostLineEdit);
@@ -92,7 +100,7 @@ ConnectionDialog::~ConnectionDialog()
 {
     qDebug() << "~ConnectionDialog()";
     _tcpSocket->abort();
-    delete _tcpSocket;
+
 }
 
 

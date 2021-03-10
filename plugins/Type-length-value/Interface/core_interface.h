@@ -1,6 +1,7 @@
 ﻿#ifndef CORE_INTERFACE_H
 #define CORE_INTERFACE_H
-
+//Подумать над размещением этого интерфейса в иерархии плагинов.
+//Следует разместить этот класс в папке plugins, и применять его к новым протоколам
 #include <QtPlugin>
 
 class CoreInterface {
