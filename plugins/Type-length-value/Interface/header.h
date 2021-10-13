@@ -1,7 +1,7 @@
 ﻿#ifndef HEADER_H
 #define HEADER_H
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 struct Header {
     quint8 type;
     quint16 length;
@@ -9,7 +9,7 @@ struct Header {
 static_assert(sizeof(Header) == 3, "Header size != 3");
 #pragma pack(pop)
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 struct Color {
     quint8 red;
     quint8 green;

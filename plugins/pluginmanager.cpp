@@ -12,26 +12,24 @@ PluginManager::PluginManager() {
     loadPlugins("./plugins/libs");
 }
 
-void PluginManager::loadPlugins(QString libDir)
-{
-    QDirIterator it(libDir , QStringList() << "*.so", QDir::Files, QDirIterator::Subdirectories);
+void PluginManager::loadPlugins(QString libDir) {
+    QDirIterator it(libDir, QStringList() << "*.so", QDir::Files, QDirIterator::Subdirectories);
     qDebug() << "search plugins in:" << libDir;
-    while (it.hasNext())
-    {
+    while (it.hasNext()) {
         it.next();
-        QPluginLoader loader( it.fileInfo().absoluteFilePath() );
+        QPluginLoader loader(it.fileInfo().absoluteFilePath());
         qDebug() << "Found:" << it.fileInfo().absoluteFilePath();
-        if( loader.load() ) {
-            if( CoreInterface *core = qobject_cast<CoreInterface *>(loader.instance()) )
-            {
+        if (loader.load()) {
+            if (CoreInterface *core = qobject_cast<CoreInterface *>(loader.instance())) {
                 auto iter = _dataPlugins.find(core->protocol());
-                if(iter == _dataPlugins.end())
-                {
-                    iter = _dataPlugins.insert(core->protocol(), new QHash<quint8, CoreInterface*>());  //add new protocol
+                if (iter == _dataPlugins.end()) {
+                    iter = _dataPlugins.insert(core->protocol(),
+                                               new QHash<quint8, CoreInterface *>());  //add new protocol
                     //There is no direct way of changing an item's key through an iterator,
                     //although it can be done by calling followed by QMap::insert()
                 }
-                iter.value()->insert(core->codogrammType(), core);                                      //add new codogram to protocol
+                iter.value()->insert(core->codogrammType(),
+                                     core);                                      //add new codogram to protocol
             }
             //loader.unload();
         } else {
@@ -41,22 +39,21 @@ void PluginManager::loadPlugins(QString libDir)
 }
 
 CoreInterface *PluginManager::getPlugin(quint8 protocol, quint8 type) const {
-    const QHash<quint8, CoreInterface*> *curProtocol = _dataPlugins[protocol];
-    if(curProtocol == nullptr)
-    {
+    const QHash<quint8, CoreInterface *> *curProtocol = _dataPlugins[protocol];
+    if (curProtocol == nullptr) {
         qDebug() << "Failed to get translate plugin:" << " bad protocol type" << protocol;
         return nullptr;
     }
-    if(curProtocol->value(type) == nullptr)
-    {
-        qDebug() << "Failed to get translate plugin:" << "protocol type" << protocol << "can't find plugin to translate type" << type;
+    if (curProtocol->value(type) == nullptr) {
+        qDebug() << "Failed to get translate plugin:" << "protocol type" << protocol
+                 << "can't find plugin to translate type" << type;
         return nullptr;
     }
     return curProtocol->value(type);
 }
 
 PluginManager *PluginManager::instance() {
-    if(_instance == nullptr) {
+    if (_instance == nullptr) {
         _instance = new PluginManager();
     }
     return _instance;

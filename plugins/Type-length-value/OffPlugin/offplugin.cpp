@@ -7,13 +7,13 @@
 using namespace std;
 
 QVariant OffPlugin::value(const QString &member, const QByteArray &data) const {
-    static const unordered_map<string, function<QVariant(const Codogramm *)>> map {
-    {"тип", [](const Codogramm *data) {return data->header.type;}},
-    {"размер", [](const Codogramm *data) {return data->header.length;}},
-    {"питание", [](const Codogramm *data) {return !(data->header.type == Flashlight::Off);}},
-};
+    static const unordered_map<string, function<QVariant(const Codogramm *)>> map{
+            {"тип",     [](const Codogramm *data) { return data->header.type; }},
+            {"размер",  [](const Codogramm *data) { return data->header.length; }},
+            {"питание", [](const Codogramm *data) { return !(data->header.type == Flashlight::Off); }},
+    };
     auto codogramm = reinterpret_cast<const Codogramm *>(data.constData());
     auto iter = map.find(member.toStdString());
-    return iter == map.end() ? QVariant {} : iter->second(codogramm);
+    return iter == map.end() ? QVariant{} : iter->second(codogramm);
 }
 

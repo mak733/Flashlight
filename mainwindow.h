@@ -18,27 +18,31 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+Q_OBJECT
 
 public:
     explicit MainWindow(QWidget *parent = nullptr,
-                        const char* ip = "127.0.0.1",
-                        const char* port = "9999");
+                        const char *ip = "127.0.0.1",
+                        const char *port = "9999");
+
     ~MainWindow();
 
 public slots:
-    void slotTranslate(const QByteArray &message);
 
+    void slotTranslate(const QByteArray &message);
     void slotCreateTestWidgets();
     void slotTestSwitchColor(int color);
     void slotTestSwitchPower(const bool power);
-
     void slotSwitchColor(QColor color);
     void slotSetFlashlightPower(bool power);
-
     void slotShowInfo();
+
+private:
+    void createActions();
+    void createMenus();
+    void createWidgets();
+    void testWidgets();
 
 private:
     QMenu *_fileMenu;
@@ -53,16 +57,12 @@ private:
 
     ConnectionDialog *_dialog;
 
-    void createActions();
-    void createMenus();
-    void createWidgets();
-
-
 #ifdef QT_DEBUG
     QCheckBox *_testButton;
     QComboBox *_testColor;
 #endif
-    void testWidgets();
+
 };
+
 Q_DECLARE_METATYPE(Color)           //needs for cast Color-type from QVariant
 #endif // MAINWINDOW_H
